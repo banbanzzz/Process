@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<style type="text/css">
+		.allcenter *{
+			text-align: center;
+		}
+	</style>
+</head>
+<body class="container-fluid">
+<pre>算法模拟选择：作业调度和进程调度是一一匹配的</pre>
+<pre>主存空间默认为100KB，默认磁带机为1台，默认进程数为1 [系统参数可自定义]</pre>
+<div class="table-responsive">
+	<table class="table allcenter">
+		<thead>
+			<tr>
+				<th>作业名称</th>
+				<th>到达时间（x秒后）</th>
+				<th>预计运行时间（秒）</th>
+				<th>内存需要（KB)</th>
+				<th>磁带机需要（台）</th>
+			</tr>
+		</thead>
+		<tbody id="table">
+			<tr>
+				<td><input type="text" name="name" value="j1"></td>
+				<td><input type="text" name="arrive_time" value="0"></td>
+				<td><input type="text" name="run_time" value="3"></td>
+				<td><input type="text" name="need_ram" value="15"></td>
+				<td><input type="text" name="need_tap" value="1"></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="name" value="j2"></td>
+				<td><input type="text" name="arrive_time" value="2"></td>
+				<td><input type="text" name="run_time" value="6"></td>
+				<td><input type="text" name="need_ram" value="60"></td>
+				<td><input type="text" name="need_tap" value="1"></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="name" value="j3"></td>
+				<td><input type="text" name="arrive_time" value="4"></td>
+				<td><input type="text" name="run_time" value="4"></td>
+				<td><input type="text" name="need_ram" value="30"></td>
+				<td><input type="text" name="need_tap" value="1"></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="name" value="j4"></td>
+				<td><input type="text" name="arrive_time" value="6"></td>
+				<td><input type="text" name="run_time" value="5"></td>
+				<td><input type="text" name="need_ram" value="30"></td>
+				<td><input type="text" name="need_tap" value="1"></td>
+			</tr>
+			<tr>
+				<td><input type="text" name="name" value="j5"></td>
+				<td><input type="text" name="arrive_time" value="8"></td>
+				<td><input type="text" name="run_time" value="2"></td>
+				<td><input type="text" name="need_ram" value="30"></td>
+				<td><input type="text" name="need_tap" value="1"></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<p class="text-center" style="font-size: 20px; font-weight: bold;">
+	作业调度：
+	<label>
+		<input type="radio" name="job" value="Job_FCFS" checked>先来先服务
+	</label>
+	<label>
+		<input type="radio" name="job" value="SJF">最小作业优先
+	</label>
+	<label>
+		<input type="radio" name="job" value="Job_HRRN" >高响应比优先
+	</label>
+	&nbsp;&nbsp;
+	进程调度：
+	<label>
+		<input type="radio" name="process" value="Process_FCFS" checked>先来先服务
+	</label>
+	<label>
+		<input type="radio" name="process" value="SPF">最短进程优先
+	</label>
+	<label>
+		<input type="radio" name="process" value="HRRN" >高响应比优先调度
+	</label>
+</p>
+<p class="text-center" style="font-size: 18px; font-weight: bold;">
+	自定义系统并发数：<input type="number" id="runprocess_num">&emsp;
+	自定义系统内存：<input  type="number" id="ram">&emsp;
+	自定义系统磁带机：<input type="number" id="tap">
+</p>
+<p class="text-center">
+	<button type="button" class="btn btn-default" id="add_btn">增加行</button>&emsp;
+	<button type="button" class="btn btn-default" id="remove_btn">删除行</button>&emsp;
+	<button type="button" class="btn btn-primary" id="start_btn">开始</button>&emsp;
+	<button type="button" class="btn btn-primary" id="stop_btn">暂停</button>&emsp;
+	<button type="button" class="btn btn-success" id="reset_btn">重置</button>
+</p>
+<div class="row">
+	<pre class="text-center" style="font-size: 16px;">运行过程</pre>
+	<pre class="text-center" style="font-size: 16px;">
+		现在时间：<span id="r_time"></span>&emsp;剩余RAM:<span id="r_ram"></span>&emsp;剩余磁带机：<span id="r_tap"></span>&emsp;剩余进程数：<span id="r_rp"></span>
+	</pre>
+</div>
+
+<div class="row" id="show_ui">
+	<div class="col-md-3">
+		<ul class="list-group" id="wait_group">
+			<li class="list-group-item text-center"><b>等待(堵塞)</b></li>
+		</ul>
+	</div>
+	<div class="col-md-3">
+		<ul class="list-group" id="ready_group">
+			<li class="list-group-item text-center"><b>就绪</b></li>
+		</ul>
+	</div>
+	<div class="col-md-3">
+		<ul class="list-group" id="run_group">
+			<li class="list-group-item text-center"><b>运行</b></li>
+		</ul>
+	</div>
+	<div class="col-md-3">
+		<ul class="list-group" id="finish_group">
+			<li class="list-group-item text-center"><b>完成</b></li>
+		</ul>
+	</div>
+</div>
+<!-- 运行过程 -->
+<div class="row">
+	<pre id="run_log"></pre>
+</div>
+<!-- 结果表格-->
+<div class="row">
+	<table class="table allcenter">
+		<thead>
+			<tr>
+				<th>名称</th>
+	            <th>到达时间</th>
+	            <th>进入时间</th>
+	            <th>完成时间</th>
+				<th>周转时间</th>
+				<th>带权周转时间</th>
+			</tr>
+		</thead>
+		<tbody id="result_table">
+			
+		</tbody>
+	</table>
+	<!-- 平均周转时间  平均带权周转时间-->
+	<pre class="text-center" style="font-size: 16px; font-weight: bold" id="aver_time"></pre>
+</div>
+</body>
+</html>
