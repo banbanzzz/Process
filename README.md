@@ -22,7 +22,7 @@
 ## 效果预览：
 
 ![index](https://github.com/banbanzzz/Process/blob/master/image/img/index.png) 
-![index1](https://github.com/banbanzzz/Process/blob/master/image/img/index1.png) 
+![index1](https://github.com/banbanzzz/Process/blob/master/image/img/index2.png) 
 
 ### 参数：
 ![参数](https://github.com/banbanzzz/Process/blob/master/image/短进程算法验证/参数.PNG) 
